@@ -62,4 +62,16 @@ public class CompanyControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
     }
+    @Test
+    void should_create_company_when_post_valid_company() throws Exception {
+        Company newCompany = new Company(null, "Tech Inc");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/companies")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(newCompany)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.name").value("Tech Inc"));
+    }
+
 }
