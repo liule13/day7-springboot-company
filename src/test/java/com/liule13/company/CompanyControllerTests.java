@@ -73,5 +73,17 @@ public class CompanyControllerTests {
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.name").value("Tech Inc"));
     }
+    @Test
+    void should_update_company_name_when_put_existing_company() throws Exception {
+        Company created = companyController.createCompany(new Company(null, "Old Name"));
+        Company updatedData = new Company(null, "New Name");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/companies/" + created.getId())
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(updatedData)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(created.getId()))
+                .andExpect(jsonPath("$.name").value("New Name"));
+    }
 
 }

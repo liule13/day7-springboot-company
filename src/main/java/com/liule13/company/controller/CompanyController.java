@@ -42,4 +42,13 @@ public class CompanyController {
     public Company getCompanyById(@PathVariable Integer id) {
         return companies.get(id);
     }
+    @PutMapping("/{id}")
+    public Company updateCompany(@PathVariable Integer id, @RequestBody Company updatedCompany) {
+        Company existing = companies.get(id);
+        if (existing != null) {
+            existing.setName(updatedCompany.getName());
+            return existing;
+        }
+        return null;
+    }
 }
