@@ -27,7 +27,7 @@ public class CompanyControllerTests {
 
     @BeforeEach
     void clear() {
-        companyController.clear(); // 每次测试前清空数据
+        companyController.clear();
     }
     @Test
     void should_return_all_companies_when_list_companies() throws Exception {
@@ -85,5 +85,17 @@ public class CompanyControllerTests {
                 .andExpect(jsonPath("$.id").value(created.getId()))
                 .andExpect(jsonPath("$.name").value("New Name"));
     }
+    @Test
+    void should_delete_company_when_delete_existing_company() throws Exception {
+        Company created = companyController.createCompany(new Company(null, "To Be Deleted"));
 
+        mockMvc.perform(MockMvcRequestBuilders.delete("/companies/" + created.getId())
+                        .contentType("application/json"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/companies/" + created.getId())
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").doesNotExist());
+    }
 }
