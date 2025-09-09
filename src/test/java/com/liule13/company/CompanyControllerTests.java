@@ -37,6 +37,15 @@ public class CompanyControllerTests {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(0)); // 初始应为空
     }
+    @Test
+    void should_return_company_when_get_company_with_id_existed() throws Exception {
+        Company saved = companyController.createCompany(new Company(null, "Spring Corp"));
 
+        mockMvc.perform(MockMvcRequestBuilders.get("/companies/" + saved.getId())
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(saved.getId()))
+                .andExpect(jsonPath("$.name").value("Spring Corp"));
+    }
 
 }
