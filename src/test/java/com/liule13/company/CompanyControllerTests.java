@@ -47,5 +47,19 @@ public class CompanyControllerTests {
                 .andExpect(jsonPath("$.id").value(saved.getId()))
                 .andExpect(jsonPath("$.name").value("Spring Corp"));
     }
+    @Test
+    void should_return_paginated_companies_when_list_with_page_and_size() throws Exception {
+        for (int i = 1; i <= 6; i++) {
+            companyController.createCompany(new Company(null, "Company " + i));
+        }
 
+        mockMvc.perform(MockMvcRequestBuilders.get("/companies?page=1&size=5")
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(5));
+        mockMvc.perform(MockMvcRequestBuilders.get("/companies?page=2&size=5")
+                        .contentType("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1));
+    }
 }
